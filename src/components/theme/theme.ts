@@ -29,6 +29,11 @@ const theme = createTheme({
             },
           ],
         },
+        // root: ({ ownerState }) => ({
+        //   ...(ownerState.severity === 'info' && {
+        //     backgroundColor: '#60a5fa',
+        //   }),
+        // }),
       },
     },
   },
