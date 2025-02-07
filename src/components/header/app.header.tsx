@@ -149,7 +149,7 @@ const AppHeader = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
+            component={Link}
             href="/"
             sx={{
               mr: 2,
@@ -192,7 +192,7 @@ const AppHeader = () => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
+            component={Link}
             href="/"
             sx={{
               mr: 2,

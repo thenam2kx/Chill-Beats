@@ -1,7 +1,7 @@
 export const pages = [
   {
     id: 1,
-    title: 'Playlist',
+    title: 'Playlists',
     href: '/playlist',
   },
   {
