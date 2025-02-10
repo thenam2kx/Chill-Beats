@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from "@/components/theme/theme";
 import AppHeader from "@/components/header/app.header";
+import AppFooter from "@/components/footer/app.footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
             <CssBaseline />
             <AppHeader />
             {children}
+            <AppFooter />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
