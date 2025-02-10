@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from "@/components/theme/theme";
 import AppHeader from "@/components/header/app.header";
 import AppFooter from "@/components/footer/app.footer";
+import Box from '@mui/material/Box'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,9 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <AppHeader />
-            {children}
+            <Box sx={{ mb: '70px' }}>
+              {children}
+            </Box>
             <AppFooter />
           </ThemeProvider>
         </AppRouterCacheProvider>

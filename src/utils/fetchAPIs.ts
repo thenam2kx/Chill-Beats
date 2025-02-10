@@ -1,6 +1,6 @@
 import queryString from "query-string";
 
-export const sendRequest = async <T>(props: IRequest) => {
+export const fetchAPIs = async <T>(props: IRequest) => {
   let { url } = props
   const {
     method,
