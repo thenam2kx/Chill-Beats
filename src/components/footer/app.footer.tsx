@@ -1,5 +1,5 @@
 'use client'
-import { useHasMounted } from '@/hooks/useHasMounted';
+import useHasMounted from '@/hooks/useHasMounted';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
