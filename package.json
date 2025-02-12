@@ -20,7 +20,8 @@
     "query-string": "^9.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "swiper": "^11.2.2"
+    "swiper": "^11.2.2",
+    "wavesurfer.js": "^7.9.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

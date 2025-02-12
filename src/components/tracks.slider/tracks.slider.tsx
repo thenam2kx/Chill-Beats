@@ -8,6 +8,9 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import Link from '@mui/material/Link'
+// import NextLink from 'next/link'
+import NextLink from "next/link";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
@@ -88,16 +91,18 @@ const TracksSlider = (props: IProps) => {
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${item.imgUrl}`}
                     sx={{ width: '100%' }}
                   />
-                  <Typography variant="h4" sx={{
+                  <Link component={NextLink} href={`/track/${item._id}?audio=${item.trackUrl}`} sx={{
                     fontSize: '16px',
                     fontWeight: 500,
                     mb: '4px',
+                    color: 'inherit',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
+                    textDecoration: 'none',
                     textOverflow: 'ellipsis',
                   }}>
                     {item.title}
-                  </Typography>
+                  </Link>
                   <Typography variant="h5" sx={{
                     fontSize: '12px',
                     color: 'gray',
