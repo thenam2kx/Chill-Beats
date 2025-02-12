@@ -134,6 +134,13 @@ const WaveTrack = () => {
           <Box sx={{ ...styleTime, left: 0 }}>{formatTime(currentTime)}</Box>
           <Box sx={{ ...styleTime, right: 0 }}>{formatTime(duration)}</Box>
           <Box className='waveHover' ref={waveHoverRef} sx={{ ...styleHover }} />
+          <Box className='waveOverlay' sx={{
+            position: "absolute",
+            height: "30px",
+            width: "100%",
+            bottom: "0",
+            background: "#ccc" }}
+          />
         </Box>
         <Button variant="contained" onClick={onPlayPause}>
           {isPlaying ? "Pause" : "Play"}
