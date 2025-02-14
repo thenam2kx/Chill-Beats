@@ -17,6 +17,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { pages, settings } from '@/utils/header.data';
+import { useSession } from "next-auth/react";
 
 
 
@@ -62,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const AppHeader = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const { data: session } = useSession()
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -214,17 +217,30 @@ const AppHeader = () => {
             justifyContent: 'flex-end',
             mx: '16px'
           }}>
-            {pages.map((page) => (
+            {
+              session
+              ?
+              pages.map((page) => (
+                <Button
+                  key={page.id}
+                  component={Link}
+                  href={page.href}
+                  onClick={handleCloseNavMenu}
+                  sx={{ mx: 1, color: 'white', display: 'block' }}
+                >
+                  {page.title}
+                </Button>
+              ))
+              :
               <Button
-                key={page.id}
                 component={Link}
-                href={page.href}
+                href={'/api/auth/signin'}
                 onClick={handleCloseNavMenu}
                 sx={{ mx: 1, color: 'white', display: 'block' }}
               >
-                {page.title}
+                Signin
               </Button>
-            ))}
+            }
           </Box>
 
           {/* Account */}
