@@ -10,7 +10,6 @@ const DetailTrackPage = ({ params }: { params: { slug: string } }) => {
 
   return (
     <div>
-      DetailTrackPage
       <WaveTrack />
     </div>
   )

@@ -88,6 +88,7 @@ const TracksSlider = (props: IProps) => {
                 <Box sx={{ width: '100%' }}>
                   <Box
                     component={'img'}
+                    alt={item.title}
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${item.imgUrl}`}
                     sx={{ width: '100%' }}
                   />
