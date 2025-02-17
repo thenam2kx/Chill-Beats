@@ -21,7 +21,7 @@ export const authOptions: AuthOptions = {
         username: { label: "Username", type: "text", placeholder: "exam@gmail.com" },
         password: { label: "Password", type: "password", placeholder: "******" }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // Add logic here to look up the user from the credentials supplied
         const res = await fetchAPIs<IBackendRes<JWT>>({
           url: 'http://localhost:8000/api/v1/auth/login',
@@ -50,6 +50,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
+
   callbacks: {
     async jwt({ token, user, account, trigger }) {
       if (trigger === 'signIn' && account?.provider !== 'credentials') {
@@ -64,10 +65,13 @@ export const authOptions: AuthOptions = {
         }
       }
       if (trigger === 'signIn' && account?.provider === 'credentials') {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         token.access_token = user.access_token;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         token.refresh_token = user.refresh_token;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         token.user = user.user;
       }
@@ -82,6 +86,14 @@ export const authOptions: AuthOptions = {
       return session
     }
   },
+
+  // pages: {
+  //   signIn: '/auth/signin',
+  //   signOut: '/auth/signout',
+  //   error: '/auth/error', // Error code passed in query string as ?error=
+  //   verifyRequest: '/auth/verify-request', // (used for check email message)
+  //   newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
+  // }
 }
 
 const handler = NextAuth(authOptions)

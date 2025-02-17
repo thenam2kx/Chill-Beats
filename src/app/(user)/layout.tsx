@@ -8,7 +8,7 @@ import theme from "@/components/theme/theme";
 import AppHeader from "@/components/header/app.header";
 import AppFooter from "@/components/footer/app.footer";
 import Box from '@mui/material/Box';
-import NextAuthProvider from "./libs/next.auth.provider";
+import NextAuthProvider from "../libs/next.auth.provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
