@@ -17,7 +17,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { pages, settings } from '@/utils/header.data';
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 
 
@@ -65,6 +65,7 @@ const AppHeader = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const { data: session } = useSession()
+  console.log('🚀 ~ AppHeader ~ session:', session)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -142,6 +143,15 @@ const AppHeader = () => {
         </Typography>
       </MenuItem>
     ))}
+      <MenuItem onClick={() => { handleCloseUserMenu(); signOut() }}>
+        <Typography
+          component={Link}
+          href={'#'}
+          sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+        >
+          Sign-out
+        </Typography>
+      </MenuItem>
   </Menu>
   )
 
@@ -234,8 +244,8 @@ const AppHeader = () => {
               :
               <Button
                 component={Link}
-                href={'/api/auth/signin'}
-                onClick={handleCloseNavMenu}
+                href={'#'}
+                onClick={() => signIn()}
                 sx={{ mx: 1, color: 'white', display: 'block' }}
               >
                 Signin

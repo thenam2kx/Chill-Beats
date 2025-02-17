@@ -12,6 +12,18 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
+  callbacks: {
+    jwt({ token, user, profile, account, trigger }) {
+      if (trigger === 'signIn' && account?.provider === 'github') {
+        // token.address = 'thenam2kx'
+      }
+      return token
+    },
+    session({ session, token, user }) {
+      // session.user.address = 'token.address as string'
+      return session
+    }
+  },
 }
 
 const handler = NextAuth(authOptions)
