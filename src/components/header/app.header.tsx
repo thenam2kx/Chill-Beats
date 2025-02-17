@@ -257,7 +257,7 @@ const AppHeader = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={session ? session?.user?.image as string : "https://picsum.photos/200/200"} />
+                <Avatar alt="Remy Sharp" src={"https://picsum.photos/200/200"} />
               </IconButton>
             </Tooltip>
           </Box>
