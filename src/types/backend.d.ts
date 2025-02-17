@@ -49,4 +49,5 @@ declare global {
     };
     result: T[];
   }
+
 }
