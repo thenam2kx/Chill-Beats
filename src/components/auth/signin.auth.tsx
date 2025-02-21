@@ -3,13 +3,29 @@ import { Container, Paper, Typography, TextField, Button, Link, Divider, IconBut
 import Google from "@mui/icons-material/Google"
 import { signIn } from "next-auth/react"
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const SigninAuth = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [open, setOpen] = useState(false);
+
+  const router = useRouter()
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     const email = data.get('email') as string
     const password= data.get('password') as string
+
+    const res = await signIn('credentials', { username: email, password, redirect: false })
+    console.log('🚀 ~ handleSubmit ~ res:', res)
+    if (!res?.error) {
+      router.push('/')
+    } else {
+      setOpen(true);
+    }
   }
 
   return (
@@ -67,6 +83,21 @@ const SigninAuth = () => {
           </IconButton>
         </Box>
       </Paper>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+          onClose={() => setOpen(false)}
+        >
+          Tài khoản / mật khẩu không đúng
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
