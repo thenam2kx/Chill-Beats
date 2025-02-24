@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { fetchAPIs } from "@/utils/fetchAPIs";
+import { useToast } from "@/utils/toast";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -51,6 +52,7 @@ interface IProps {
     percent: number
     fileNameUploaded: string
   }
+  setValue: (value: number) => void
 }
 interface ITrackInfo {
   title: string
@@ -61,7 +63,7 @@ interface ITrackInfo {
 }
 
 const ProgressUpload = (props: IProps) => {
-  const { fileUpload } = props
+  const { fileUpload, setValue } = props
   const { data: session } = useSession()
   const [trackInfo, setTrackInfo] = useState<ITrackInfo>({
     title: '',
@@ -70,6 +72,8 @@ const ProgressUpload = (props: IProps) => {
     imageUrl: '',
     category: '',
   })
+
+  const toast = useToast()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleUploadImage = async (image: any) => {
@@ -118,9 +122,10 @@ const ProgressUpload = (props: IProps) => {
         }
       })
     if (res.data) {
-      alert('Upload track success')
+      setValue(0)
+      toast.success('Upload track success')
     } else {
-      alert(res.message)
+      toast.error(res.message)
     }
   }
 

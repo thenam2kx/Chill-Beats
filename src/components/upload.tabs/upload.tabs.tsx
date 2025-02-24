@@ -62,15 +62,15 @@ const UploadTabs = () => {
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <Tab label="Upload" {...a11yProps(0)} />
-            <Tab label="Information" {...a11yProps(1)} />
+            <Tab label="Upload" {...a11yProps(0)} disabled={value !== 0} />
+            <Tab label="Information" {...a11yProps(1)} disabled={value !== 1} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
           <FileUpload setValue={setValue} setFileUpload={setFileUpload} fileUpload={fileUpload} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ProgressUpload fileUpload={fileUpload} />
+          <ProgressUpload fileUpload={fileUpload} setValue={setValue} />
         </CustomTabPanel>
       </Box>
     </Container>

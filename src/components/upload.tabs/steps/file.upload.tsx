@@ -48,8 +48,7 @@ const FileUpload = (props: IProps) => {
           {
             headers: {
               Authorization: `Bearer ${session?.access_token}`,
-              'target_type': 'tracks',
-              delay: 5000
+              'target_type': 'tracks'
             },
             onUploadProgress: (progressEvent) => {
               const percentComplete = Math.floor((progressEvent.loaded * 100) / progressEvent.total!)
