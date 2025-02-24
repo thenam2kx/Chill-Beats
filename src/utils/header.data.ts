@@ -12,7 +12,7 @@ export const pages = [
   {
     id: 3,
     title: 'Upload',
-    href: '/upload',
+    href: '/track/upload',
   },
 ];
 
