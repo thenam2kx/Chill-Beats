@@ -5,6 +5,9 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from "@/components/theme/theme";
+import Box from '@mui/material/Box';
+import NextAuthProvider from "./libs/next.auth.provider";
+import { ToastProvider } from "@/utils/toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +36,13 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            <NextAuthProvider>
+              <ToastProvider>
+                <Box sx={{ mb: '70px' }}>
+                  {children}
+                </Box>
+              </ToastProvider>
+            </NextAuthProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
