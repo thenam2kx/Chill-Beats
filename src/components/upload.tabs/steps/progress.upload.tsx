@@ -9,6 +9,9 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { VisuallyHiddenInput } from "./file.upload";
 import LinearProgress, { LinearProgressProps } from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { fetchAPIs } from "@/utils/fetchAPIs";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -23,27 +26,6 @@ function LinearProgressWithLabel(
           props.value
         )}%`}</Typography>
       </Box>
-    </Box>
-  );
-}
-
-function LinearWithValueLabel() {
-  const [progress, setProgress] = useState(10);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 10 : prevProgress + 10
-      );
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  return (
-    <Box sx={{ width: "100%" }}>
-      <LinearProgressWithLabel value={progress} />
     </Box>
   );
 }
@@ -63,15 +45,103 @@ const category = [
   },
 ];
 
+interface IProps {
+  fileUpload: {
+    fileName: string,
+    percent: number
+    fileNameUploaded: string
+  }
+}
+interface ITrackInfo {
+  title: string
+  description: string
+  trackUrl: string
+  imageUrl: string
+  category: string
+}
 
-const ProgressUpload = () => {
+const ProgressUpload = (props: IProps) => {
+  const { fileUpload } = props
+  const { data: session } = useSession()
+  const [trackInfo, setTrackInfo] = useState<ITrackInfo>({
+    title: '',
+    description: '',
+    trackUrl: '',
+    imageUrl: '',
+    category: '',
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleUploadImage = async (image: any) => {
+      const formData = new FormData()
+      formData.append('fileUpload', image)
+
+      try {
+        const res = await axios.post(
+          'http://localhost:8000/api/v1/files/upload',
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${session?.access_token}`,
+              'target_type': 'images'
+            },
+          }
+        )
+        setTrackInfo({
+          ...trackInfo,
+          imageUrl: res.data.data.fileName
+        })
+        // setFileUpload({
+        //   ...fileUpload,
+        //   fileNameUploaded: res.data.data.fileName
+        // })
+      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        alert(error?.response?.data?.message)
+      }
+  }
+
+  const handleSubmitForm = async () => {
+    const res = await fetchAPIs<IBackendRes<ITracksTop[]>>({
+        url: 'http://localhost:8000/api/v1/tracks',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: {
+          title: trackInfo.title,
+          description: trackInfo.description,
+          trackUrl: trackInfo.trackUrl,
+          imgUrl: trackInfo.imageUrl,
+          category: trackInfo.category,
+        }
+      })
+    if (res.data) {
+      alert('Upload track success')
+    } else {
+      alert(res.message)
+    }
+  }
+
+  useEffect(() => {
+    if (fileUpload && fileUpload.fileNameUploaded) {
+      setTrackInfo({
+        ...trackInfo,
+        trackUrl: fileUpload.fileNameUploaded
+      })
+    }
+
+  }, [fileUpload])
 
   return (
     <>
-      <div>
-        <div>Your uploading track:</div>
-        <LinearWithValueLabel />
-      </div>
+      <Box>
+        <Box>Your uploading track: {fileUpload.fileName}</Box>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgressWithLabel value={fileUpload.percent} />
+        </Box>
+      </Box>
 
       <Grid container spacing={2} mt={5}>
         <Grid
@@ -84,9 +154,18 @@ const ProgressUpload = () => {
             gap: "10px",
           }}
         >
-          <div style={{ height: 250, width: 250, background: "#ccc" }}>
-            <div></div>
-          </div>
+          <Box sx={{ height: 250, width: 250, background: "#ccc" }}>
+            {
+              trackInfo.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${trackInfo.imageUrl}`}
+                  alt="track"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )
+            }
+          </Box>
           <Box>
             <Button
               component="label"
@@ -94,7 +173,12 @@ const ProgressUpload = () => {
               variant="contained"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
-              onClick={(e) => e.preventDefault()}
+              onChange={e => {
+                const event = e.target as HTMLInputElement
+                if (event.files) {
+                  handleUploadImage(event.files[0])
+                }
+              }}
             >
               Upload files
               <VisuallyHiddenInput
@@ -107,28 +191,31 @@ const ProgressUpload = () => {
         </Grid>
         <Grid size={{ xs: 6, md: 8 }}>
           <TextField
-            id="standard-basic"
             label="Title"
             variant="standard"
             fullWidth
             margin="dense"
+            value={trackInfo?.title}
+            onChange={(e) => setTrackInfo({ ...trackInfo, title: e.target.value })}
           />
           <TextField
-            id="standard-basic"
             label="Description"
             variant="standard"
             fullWidth
             margin="dense"
+            value={trackInfo?.description}
+            onChange={(e) => setTrackInfo({ ...trackInfo, description: e.target.value })}
           />
           <TextField
             sx={{
               mt: 3,
             }}
-            id="outlined-select-currency"
             select
             label="Category"
             fullWidth
             variant="standard"
+            value={trackInfo?.category}
+            onChange={(e) => setTrackInfo({ ...trackInfo, category: e.target.value })}
           >
             {category.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -138,9 +225,8 @@ const ProgressUpload = () => {
           </TextField>
           <Button
             variant="outlined"
-            sx={{
-              mt: 5,
-            }}
+            sx={{ mt: 5 }}
+            onClick={() => handleSubmitForm()}
           >
             Save
           </Button>

@@ -6,8 +6,9 @@ import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Box from '@mui/material/Box';
 import { useCallback } from 'react';
-import { fetchFileAPIs } from '@/utils/fetchAPIs';
+import axios from 'axios'
 import { useSession } from 'next-auth/react';
+import { IFileUploadState } from '../upload.tabs';
 
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -21,27 +22,56 @@ export const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-const FileUpload = () => {
+
+interface IProps {
+  setValue: (value: number) => void
+  fileUpload: IFileUploadState
+  setFileUpload: (fileUpload: IFileUploadState | ((prevState: IFileUploadState) => IFileUploadState)) => void;
+}
+
+const FileUpload = (props: IProps) => {
+  const { setValue, setFileUpload, fileUpload } = props
   const { data: session } = useSession()
 
   const onDrop = useCallback( async(acceptedFiles: FileWithPath[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
-      const audio = acceptedFiles[0]
+      setValue(1)
 
+      const audio = acceptedFiles[0]
       const formData = new FormData()
       formData.append('fileUpload', audio)
 
-      const res = await fetchFileAPIs<IBackendRes<ITracksTop[]>>({
-          url: 'http://localhost:8000/api/v1/files/upload',
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session?.access_token}`,
-            'target_type': 'tracks'
-          },
-          body: formData
-        })
+      try {
+        const res = await axios.post(
+          'http://localhost:8000/api/v1/files/upload',
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${session?.access_token}`,
+              'target_type': 'tracks',
+              delay: 5000
+            },
+            onUploadProgress: (progressEvent) => {
+              const percentComplete = Math.floor((progressEvent.loaded * 100) / progressEvent.total!)
+              setFileUpload({
+                ...fileUpload,
+                fileName: acceptedFiles[0].name,
+                percent: percentComplete
+              })
+            }
+          }
+        )
+        setFileUpload((prevState: IFileUploadState) => ({
+          ...prevState,
+          fileNameUploaded: res.data.data.fileName
+        }))
+      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        alert(error?.response?.data?.message)
+      }
     }
-  }, [session])
+  }, [session, setValue, setFileUpload, fileUpload])
 
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
     onDrop,

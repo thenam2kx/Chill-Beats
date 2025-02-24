@@ -39,7 +39,14 @@ function a11yProps(index: number) {
   };
 }
 
+export interface IFileUploadState {
+  fileName: string;
+  percent: number;
+  fileNameUploaded: string;
+}
+
 const UploadTabs = () => {
+  const [fileUpload, setFileUpload] = useState<IFileUploadState>({ fileName: '', percent: 0, fileNameUploaded: '' });
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -60,10 +67,10 @@ const UploadTabs = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <FileUpload />
+          <FileUpload setValue={setValue} setFileUpload={setFileUpload} fileUpload={fileUpload} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ProgressUpload />
+          <ProgressUpload fileUpload={fileUpload} />
         </CustomTabPanel>
       </Box>
     </Container>
