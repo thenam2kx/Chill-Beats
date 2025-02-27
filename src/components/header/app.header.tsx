@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import { pages, settings } from '@/utils/header.data';
+import { pages } from '@/utils/header.data';
 import { signOut, useSession } from "next-auth/react";
 
 
@@ -132,26 +132,33 @@ const AppHeader = () => {
     open={Boolean(anchorElUser)}
     onClose={handleCloseUserMenu}
   >
-    {settings.map((setting) => (
-      <MenuItem key={setting.id} onClick={handleCloseUserMenu}>
-        <Typography
-          component={Link}
-          href={setting.href}
-          sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
-        >
-          {setting.title}
-        </Typography>
-      </MenuItem>
-    ))}
-      <MenuItem onClick={() => { handleCloseUserMenu(); signOut() }}>
-        <Typography
-          component={Link}
-          href={'#'}
-          sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
-        >
-          Sign-out
-        </Typography>
-      </MenuItem>
+    <MenuItem onClick={() => { handleCloseUserMenu()}}>
+      <Typography
+        component={Link}
+        href={'#'}
+        sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+      >
+        Setting
+      </Typography>
+    </MenuItem>
+    <MenuItem onClick={() => { handleCloseUserMenu()}}>
+      <Typography
+        component={Link}
+        href={`/profile/${session?.user._id}`}
+        sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+      >
+        Profile
+      </Typography>
+    </MenuItem>
+    <MenuItem onClick={() => { handleCloseUserMenu(); signOut() }}>
+      <Typography
+        component={Link}
+        href={'#'}
+        sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+      >
+        Sign-out
+      </Typography>
+    </MenuItem>
   </Menu>
   )
 
