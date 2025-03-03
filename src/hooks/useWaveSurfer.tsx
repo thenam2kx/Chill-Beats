@@ -20,7 +20,9 @@ const useWaveSurfer = (
         const { width, height } = ctx.canvas;
         const barWidth = options.barWidth || 2;
         const barGap = options.barGap || 1;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const barRadius = options.barRadius || 0;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const separationLineHeight = 0.5; // Height of the separation line
 
         const barCount = Math.floor(width / (barWidth + barGap));

@@ -137,6 +137,7 @@ const ProgressUpload = (props: IProps) => {
       })
     }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileUpload])
 
   return (

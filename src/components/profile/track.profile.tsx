@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react"
+import { useContext } from "react"
 import Grid from "@mui/material/Grid2"
 import List from "@mui/material/List"
 import IconButton from "@mui/material/IconButton"
@@ -12,6 +12,7 @@ import Avatar from '@mui/material/Avatar'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import { PlayArrow, Pause, Favorite, Share } from "@mui/icons-material"
 import { deepOrange } from "@mui/material/colors"
+import { TrackContext } from "@/app/libs/track.wrapper"
 
 interface IProps {
   listTracks: ITracksTop[]
@@ -19,11 +20,9 @@ interface IProps {
 
 const TrackProfile = (props: IProps) => {
   const { listTracks } = props
-  const [playingTrack, setPlayingTrack] = useState<string | null>(null)
 
-  const togglePlay = (trackId: string) => {
-    setPlayingTrack(playingTrack === trackId ? null : trackId)
-  }
+  const { currentTrack, setCurrentTrack } = useContext(TrackContext) as ITrackContext
+
 
   return (
     <List>
@@ -48,9 +47,21 @@ const TrackProfile = (props: IProps) => {
             }}
           >
             <ListItemIcon>
-              <IconButton onClick={() => togglePlay(track._id)}>
-                {playingTrack === track._id ? <Pause /> : <PlayArrow />}
-              </IconButton>
+              {
+                (track._id !== currentTrack._id ||
+                track._id === currentTrack._id &&
+                currentTrack.isPlaying === false) &&
+                <IconButton onClick={() => setCurrentTrack({ ...track, isPlaying: true })}>
+                  <PlayArrow />
+                </IconButton>
+              }
+              {
+                track._id === currentTrack._id &&
+                currentTrack.isPlaying === true &&
+                <IconButton onClick={() => setCurrentTrack({ ...track, isPlaying: false })}>
+                  <Pause />
+                </IconButton>
+              }
             </ListItemIcon>
             <ListItemAvatar>
               <Avatar sx={{ bgcolor: deepOrange[500] }} src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} variant="square"></Avatar>

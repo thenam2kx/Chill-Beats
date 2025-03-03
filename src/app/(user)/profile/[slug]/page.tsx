@@ -10,14 +10,12 @@ import {
 } from "@mui/material"
 import { getServerSession } from "next-auth"
 
-
-
-const ProfilePage = async ({ params }: { params: { slug: string } }) => {
+const ProfilePage = async ({ params }: {params: Promise<{ slug: string }> }) => {
   const { slug } = await params
   const session = await getServerSession(authOptions)
 
   const result = await fetchAPIs<IBackendRes<IModelPaginate<ITracksTop>>>({
-    url: 'http://localhost:8000/api/v1/tracks/users?current=1&pageSize=10',
+    url: 'http://localhost:8000/api/v1/tracks/users?current=1&pageSize=50&sort=-createdAt',
     method: 'POST',
     body: { id: slug }
   })

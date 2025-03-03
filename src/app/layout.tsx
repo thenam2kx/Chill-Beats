@@ -8,6 +8,7 @@ import theme from "@/components/theme/theme";
 import Box from '@mui/material/Box';
 import NextAuthProvider from "./libs/next.auth.provider";
 import { ToastProvider } from "@/utils/toast";
+import { TrackContextProvider } from "./libs/track.wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +38,13 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <NextAuthProvider>
-              <ToastProvider>
-                <Box sx={{ mb: '70px' }}>
-                  {children}
-                </Box>
-              </ToastProvider>
+              <TrackContextProvider>
+                <ToastProvider>
+                  <Box sx={{ mb: '70px' }}>
+                    {children}
+                  </Box>
+                </ToastProvider>
+              </TrackContextProvider>
             </NextAuthProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
