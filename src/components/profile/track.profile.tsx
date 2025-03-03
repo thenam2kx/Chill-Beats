@@ -13,6 +13,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import { PlayArrow, Pause, Favorite, Share } from "@mui/icons-material"
 import { deepOrange } from "@mui/material/colors"
 import { TrackContext } from "@/app/libs/track.wrapper"
+import Link from "next/link"
 
 interface IProps {
   listTracks: ITracksTop[]
@@ -22,7 +23,6 @@ const TrackProfile = (props: IProps) => {
   const { listTracks } = props
 
   const { currentTrack, setCurrentTrack } = useContext(TrackContext) as ITrackContext
-
 
   return (
     <List>
@@ -64,10 +64,13 @@ const TrackProfile = (props: IProps) => {
               }
             </ListItemIcon>
             <ListItemAvatar>
-              <Avatar sx={{ bgcolor: deepOrange[500] }} src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} variant="square"></Avatar>
+              <Avatar
+                sx={{ bgcolor: deepOrange[500] }}
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
+                variant="square"
+              >D</Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={track.title}
               secondary={
                 <>
                   <Grid container spacing={1}>
@@ -77,7 +80,7 @@ const TrackProfile = (props: IProps) => {
                       </Typography>
                     </Grid>
                     <Grid>
-                      <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
+                      <Typography sx={{ display: "inline",  }} component="span" variant="body2" color="text.primary">
                         {track.countLike} likes
                       </Typography>
                     </Grid>
@@ -89,7 +92,16 @@ const TrackProfile = (props: IProps) => {
                   </Grid>
                 </>
               }
-            />
+            >
+              <Typography
+              variant="h6"
+              component={Link}
+              href={`/track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}
+              sx={{ cursor: "pointer", color: 'inherit', textDecoration: 'none', fontSize: '1.2rem' }}
+            >
+              {track.title}
+            </Typography>
+            </ListItemText>
           </ListItem>
         </Grid>
       ))}

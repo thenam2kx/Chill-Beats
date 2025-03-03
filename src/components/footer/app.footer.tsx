@@ -134,7 +134,8 @@ const AppFooter = () => {
       audioRef.current.pause();
       setPaused(true);
     }
-  }, [currentTrack.isPlaying, currentTrack.trackUrl]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack.trackUrl]);
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -297,26 +298,29 @@ const AppFooter = () => {
 
 
           {/* Info */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <CoverImage>
-              <Box
-                component={'img'}
-                alt="can't win - Chilling Sunday"
-                src="https://picsum.photos/200/200"
-              />
-            </CoverImage>
-            <Box sx={{ ml: 1.5, minWidth: 0 }}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', fontWeight: 500, fontSize: '0.75rem' }}
-              >
-                Jun Pulse
-              </Typography>
-              <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                <b>คนเก่าเขาทำไว้ดี (Can&apos;t win)</b>
-              </Typography>
+          {
+            currentTrack && currentTrack.title &&
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <CoverImage>
+                <Box
+                  component={'img'}
+                  alt={currentTrack.title}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`}
+                />
+              </CoverImage>
+              <Box sx={{ ml: 1.5, minWidth: 0 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 500, fontSize: '0.75rem' }}
+                >
+                  {currentTrack.title}
+                </Typography>
+                <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
+                  <b>{currentTrack.uploader.name}</b>
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          }
         </Widget>
       </Container>
     </AppBar>

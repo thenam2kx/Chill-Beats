@@ -1,17 +1,17 @@
-'use client'
-
 import WaveTrack from "@/components/wave.track/wave.track"
-import { useSearchParams } from "next/navigation"
+import { fetchAPIs } from "@/utils/fetchAPIs"
 
-const DetailTrackPage = () => {
-
-  const searchParams = useSearchParams()
-  const search = searchParams.get('audio')
-  console.log('🚀 ~ DetailTrackPage ~ search:', search)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
+  const { slug }= await params
+  const trackInfo = await fetchAPIs<IBackendRes<ITracksTop>>({
+    url: `http://localhost:8000/api/v1/tracks/${slug}`,
+    method: "GET",
+  })
 
   return (
     <div>
-      <WaveTrack />
+      <WaveTrack trackInfo={trackInfo?.data ?? null} />
     </div>
   )
 }
