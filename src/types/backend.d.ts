@@ -19,8 +19,8 @@ declare global {
     category: string
     imgUrl: string
     trackUrl: string
-    countLike: string
-    countPlay: string
+    countLike: number
+    countPlay: number
     uploader: {
         _id: string,
         email: string,
@@ -28,7 +28,7 @@ declare global {
         role: string
         type: string
     }
-    isDeleted: false
+    isDeleted: boolean
     createdAt: string
     updatedAt: string
   }
@@ -50,4 +50,12 @@ declare global {
     result: T[];
   }
 
+  interface IShareTrack extends ITracksTop {
+    isPlaying: boolean;
+  }
+
+  interface ITrackContext {
+    currentTrack: IShareTrack;
+    setCurrentTrack: (v: IShareTrack) => void;
+  }
 }

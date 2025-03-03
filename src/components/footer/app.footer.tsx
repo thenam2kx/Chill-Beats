@@ -1,6 +1,6 @@
 'use client'
 import useHasMounted from '@/hooks/useHasMounted';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -15,6 +15,7 @@ import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
 import AppBar from '@mui/material/AppBar';
 import Container from '@mui/material/Container';
+import { TrackContext } from '@/app/libs/track.wrapper';
 
 
 const Widget = styled('div')(({ theme }) => ({
@@ -60,6 +61,8 @@ const AppFooter = () => {
   const [paused, setPaused] = useState(true);
   const [volume, setVolume] = useState(30);
 
+  const { currentTrack, setCurrentTrack } = useContext(TrackContext) as ITrackContext
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleMetadataLoaded = useCallback(() => {
@@ -79,8 +82,10 @@ const AppFooter = () => {
     if (!audio) return;
 
     if (paused) {
+      setCurrentTrack({ ...currentTrack, isPlaying: true })
       audio.play();
     } else {
+      setCurrentTrack({ ...currentTrack, isPlaying: false })
       audio.pause();
     }
     setPaused(!paused);
@@ -108,14 +113,36 @@ const AppFooter = () => {
   }
 
   useEffect(() => {
-    if (audioRef.current) {
-      if (paused) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch((error) => {
-          console.error('Audio play error:', error);
-        });
-      }
+    if (currentTrack.isPlaying) {
+      setPaused(false)
+    } else {
+      setPaused(true)
+    }
+  }, [currentTrack.isPlaying])
+
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    audioRef.current.src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`;
+    audioRef.current.load();
+
+    if (currentTrack.isPlaying) {
+      audioRef.current.play().catch((error) => console.error('Audio play error:', error));
+      setPaused(false);
+    } else {
+      audioRef.current.pause();
+      setPaused(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack.trackUrl]);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (paused) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch((error) => console.error('Audio play error:', error));
     }
   }, [paused]);
 
@@ -132,7 +159,7 @@ const AppFooter = () => {
           onTimeUpdate={handleCurrentTime}
           // onEnded={handleEndSong}
           ref={audioRef}
-          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
+          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`}
           hidden
         />
 
@@ -271,26 +298,29 @@ const AppFooter = () => {
 
 
           {/* Info */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <CoverImage>
-              <Box
-                component={'img'}
-                alt="can't win - Chilling Sunday"
-                src="https://picsum.photos/200/200"
-              />
-            </CoverImage>
-            <Box sx={{ ml: 1.5, minWidth: 0 }}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', fontWeight: 500, fontSize: '0.75rem' }}
-              >
-                Jun Pulse
-              </Typography>
-              <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                <b>คนเก่าเขาทำไว้ดี (Can&apos;t win)</b>
-              </Typography>
+          {
+            currentTrack && currentTrack.title &&
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <CoverImage>
+                <Box
+                  component={'img'}
+                  alt={currentTrack.title}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`}
+                />
+              </CoverImage>
+              <Box sx={{ ml: 1.5, minWidth: 0 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 500, fontSize: '0.75rem' }}
+                >
+                  {currentTrack.title}
+                </Typography>
+                <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
+                  <b>{currentTrack.uploader.name}</b>
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          }
         </Widget>
       </Container>
     </AppBar>
@@ -298,3 +328,4 @@ const AppFooter = () => {
 }
 
 export default AppFooter
+

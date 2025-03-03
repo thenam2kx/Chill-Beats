@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import useWaveSurfer from "@/hooks/useWaveSurfer";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -12,6 +12,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import Tooltip from '@mui/material/Tooltip';
+import { TrackContext } from "@/app/libs/track.wrapper";
 
 const styleTime: React.CSSProperties = {
   position: "absolute",
@@ -84,7 +85,12 @@ const arrComments = [
   },
 ];
 
-const WaveTrack = () => {
+interface IProps {
+  trackInfo: ITracksTop | null;
+}
+
+const WaveTrack = (props: IProps) => {
+  const { trackInfo } = props;
   const waveRef = useRef<HTMLDivElement>(null);
   const waveHoverRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
@@ -92,6 +98,8 @@ const WaveTrack = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
+
+  const { currentTrack, setCurrentTrack } = useContext(TrackContext) as ITrackContext
 
   // WaveSurfer options
   const optionMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
@@ -211,6 +219,27 @@ const WaveTrack = () => {
     return `${percent}%`;
   };
 
+  // useEffect(() => {
+  //   if (trackInfo?._id === currentTrack._id && waveSurfer) {
+  //     currentTrack.isPlaying ? waveSurfer.pause() : waveSurfer.play()
+  //   }
+  // }, [currentTrack])
+
+
+  useEffect(() => {
+    if (waveSurfer && currentTrack.isPlaying) {
+      waveSurfer.pause()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack])
+
+  useEffect(() => {
+    if (trackInfo?._id && !currentTrack._id) {
+      setCurrentTrack({ ...trackInfo, isPlaying: false })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackInfo])
+
   return (
     <>
       <Container>
@@ -245,7 +274,13 @@ const WaveTrack = () => {
             >
               {/* Play Button */}
               <IconButton
-                onClick={onPlayPause}
+                onClick={() => {
+                  onPlayPause();
+                  if (trackInfo && waveSurfer) {
+                    // setCurrentTrack({ ...trackInfo, isPlaying: !waveSurfer?.isPlaying() })
+                    setCurrentTrack({ ...currentTrack, isPlaying: false })
+                  }
+                }}
                 sx={{
                   bgcolor: "#ff5500",
                   color: "white",
@@ -263,11 +298,11 @@ const WaveTrack = () => {
                   <Typography
                     variant="caption"
                     color="grey.500"
-                    sx={{ fontSize: "20px" }}
+                    sx={{ fontSize: "22px" }}
                   >
                     Related tracks:
                   </Typography>
-                  <Typography variant="body2">Xi Măng Phố Vol 10</Typography>
+                  <Typography variant="body2" sx={{ fontSize: '24px' }}>{trackInfo?.title}</Typography>
                   <LockIcon sx={{ fontSize: 16, color: "grey.500" }} />
                   <Typography variant="caption" color="grey.500">
                     Private
@@ -278,7 +313,7 @@ const WaveTrack = () => {
                   color="grey.500"
                   sx={{ fontSize: "16px" }}
                 >
-                  Made for Mai Thế Nam
+                  Made for {trackInfo?.uploader?.name}
                 </Typography>
               </Box>
             </Box>
@@ -327,7 +362,7 @@ const WaveTrack = () => {
           >
             <Box
               component={"img"}
-              src={`https://picsum.photos/200/200`}
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${trackInfo?.imgUrl}`}
               alt="Profile"
               sx={{
                 width: "100%",
