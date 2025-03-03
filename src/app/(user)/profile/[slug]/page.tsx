@@ -1,5 +1,6 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import TrackProfile from "@/components/profile/track.profile"
+import { authOptions } from "@/utils/auth.options"
 import { fetchAPIs } from "@/utils/fetchAPIs"
 import {
   Avatar,
