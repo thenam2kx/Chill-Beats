@@ -70,37 +70,32 @@ const TrackProfile = (props: IProps) => {
                 variant="square"
               >D</Avatar>
             </ListItemAvatar>
-            <ListItemText
-              secondary={
-                <>
-                  <Grid container spacing={1}>
-                    <Grid>
-                      <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
-                        {track.countPlay} plays
-                      </Typography>
-                    </Grid>
-                    <Grid>
-                      <Typography sx={{ display: "inline",  }} component="span" variant="body2" color="text.primary">
-                        {track.countLike} likes
-                      </Typography>
-                    </Grid>
-                    <Grid>
-                      <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
-                        {track.description}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </>
-              }
-            >
+            <ListItemText>
               <Typography
-              variant="h6"
-              component={Link}
-              href={`/track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}
-              sx={{ cursor: "pointer", color: 'inherit', textDecoration: 'none', fontSize: '1.2rem' }}
-            >
-              {track.title}
-            </Typography>
+                variant="h6"
+                component={Link}
+                href={`/track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}
+                sx={{ cursor: "pointer", color: 'inherit', textDecoration: 'none', fontSize: '1.2rem' }}
+              >
+                {track.title}
+              </Typography>
+              <Grid container spacing={1}>
+                <Grid>
+                  <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
+                    {track.countPlay} plays
+                  </Typography>
+                </Grid>
+                <Grid>
+                  <Typography sx={{ display: "inline",  }} component="span" variant="body2" color="text.primary">
+                    {track.countLike} likes
+                  </Typography>
+                </Grid>
+                <Grid>
+                  <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
+                    {track.description}
+                  </Typography>
+                </Grid>
+              </Grid>
             </ListItemText>
           </ListItem>
         </Grid>
