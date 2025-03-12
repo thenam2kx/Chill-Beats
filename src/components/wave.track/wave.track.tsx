@@ -13,6 +13,8 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import Tooltip from '@mui/material/Tooltip';
 import { TrackContext } from "@/app/libs/track.wrapper";
+import { fetchDefaultImage } from "@/utils/utils";
+import TracksComments from "../tracks.comments/tracks.comments";
 
 const styleTime: React.CSSProperties = {
   position: "absolute",
@@ -61,36 +63,13 @@ const styleImageComment: React.CSSProperties = {
   zIndex: 11,
 };
 
-const arrComments = [
-  {
-    id: 1,
-    avatar: "http://localhost:8000/images/chill1.png",
-    moment: 10,
-    user: "username 1",
-    content: "just a comment1",
-  },
-  {
-    id: 2,
-    avatar: "http://localhost:8000/images/chill1.png",
-    moment: 30,
-    user: "username 2",
-    content: "just a comment3",
-  },
-  {
-    id: 3,
-    avatar: "http://localhost:8000/images/chill1.png",
-    moment: 50,
-    user: "username 3",
-    content: "just a comment3",
-  },
-];
-
 interface IProps {
   trackInfo: ITracksTop | null;
+  comments: ITrackComment[] | null;
 }
 
 const WaveTrack = (props: IProps) => {
-  const { trackInfo } = props;
+  const { trackInfo, comments } = props;
   const waveRef = useRef<HTMLDivElement>(null);
   const waveHoverRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
@@ -214,7 +193,7 @@ const WaveTrack = (props: IProps) => {
 
   // Calculate comment current time
   const commentCurrentTime = (moment: number) => {
-    const hardCodeDuration = 199
+    const hardCodeDuration = waveSurfer?.getDuration() ?? 0
     const percent = (moment / hardCodeDuration) * 100;
     return `${percent}%`;
   };
@@ -334,11 +313,12 @@ const WaveTrack = (props: IProps) => {
               {/* Comments */}
               <Box sx={{}}>
                 {
-                  arrComments.map((comment) => (
-                    <Tooltip key={comment.id} title={comment.content} placement="top" arrow>
+                  comments?.map((comment) => (
+                    <Tooltip key={comment?._id} title={comment.content} placement="top" arrow>
                       <Box
                         component={"img"}
-                        src={comment.avatar}
+                        src={`/${fetchDefaultImage(comment.user.type)}`}
+                        alt={comment.user.name}
                         onPointerMove={() => {
                           const hover = waveHoverRef.current!;
                           hover.style.width = commentCurrentTime(comment.moment + 3);
@@ -373,6 +353,7 @@ const WaveTrack = (props: IProps) => {
             />
           </Box>
         </Paper>
+        <TracksComments comments={comments} trackInfo={trackInfo} wavesurfer={waveSurfer} />
       </Container>
     </>
   );
