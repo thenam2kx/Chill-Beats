@@ -15,6 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { TrackContext } from "@/app/libs/track.wrapper";
 import { fetchDefaultImage } from "@/utils/utils";
 import TracksComments from "../tracks.comments/tracks.comments";
+import LikeTrack from "../tracks.like/tracks.like";
 
 const styleTime: React.CSSProperties = {
   position: "absolute",
@@ -353,6 +354,8 @@ const WaveTrack = (props: IProps) => {
             />
           </Box>
         </Paper>
+
+        <LikeTrack track={trackInfo} />
         <TracksComments comments={comments} trackInfo={trackInfo} wavesurfer={waveSurfer} />
       </Container>
     </>

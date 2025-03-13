@@ -74,4 +74,15 @@ declare global {
       _id: string;
     };
   }
+
+  interface ITracksLike {
+    _id: string
+    title: string
+    description: string
+    category: string
+    imgUrl: string
+    trackUrl: string
+    countLike: number
+    countPlay: number
+  }
 }

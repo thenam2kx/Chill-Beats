@@ -7,6 +7,7 @@ const DetailTrackPage = async ({ params }: { params: any }) => {
   const trackInfo = await fetchAPIs<IBackendRes<ITracksTop>>({
     url: `http://localhost:8000/api/v1/tracks/${slug}`,
     method: "GET",
+    nextOption: { cache: 'no-store' }
   })
 
   const listComments = await fetchAPIs<IBackendRes<IModelPaginate<ITrackComment>>>({
