@@ -1,6 +1,13 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import useWaveSurfer from "@/hooks/useWaveSurfer";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -11,11 +18,12 @@ import { WaveSurferOptions } from "wavesurfer.js";
 import LockIcon from "@mui/icons-material/Lock";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 import { TrackContext } from "@/app/libs/track.wrapper";
 import { fetchDefaultImage } from "@/utils/utils";
 import TracksComments from "../tracks.comments/tracks.comments";
 import LikeTrack from "../tracks.like/tracks.like";
+import { fetchAPIs } from "@/utils/fetchAPIs";
 
 const styleTime: React.CSSProperties = {
   position: "absolute",
@@ -78,8 +86,12 @@ const WaveTrack = (props: IProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const router = useRouter()
+  const firstViewRef = useRef(true)
 
-  const { currentTrack, setCurrentTrack } = useContext(TrackContext) as ITrackContext
+  const { currentTrack, setCurrentTrack } = useContext(
+    TrackContext
+  ) as ITrackContext;
 
   // WaveSurfer options
   const optionMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
@@ -194,9 +206,23 @@ const WaveTrack = (props: IProps) => {
 
   // Calculate comment current time
   const commentCurrentTime = (moment: number) => {
-    const hardCodeDuration = waveSurfer?.getDuration() ?? 0
+    const hardCodeDuration = waveSurfer?.getDuration() ?? 0;
     const percent = (moment / hardCodeDuration) * 100;
     return `${percent}%`;
+  };
+
+  const handleIncreaseView = async () => {
+    if (firstViewRef.current) {
+      await fetchAPIs<IBackendRes<IModelPaginate<ITracksLike>>>({
+        url: `http://localhost:8000/api/v1/tracks/increase-view`,
+        method: "POST",
+        body: {
+          trackId: trackInfo?._id,
+        }
+      });
+      firstViewRef.current = false
+      router.refresh()
+    }
   };
 
   // useEffect(() => {
@@ -205,20 +231,19 @@ const WaveTrack = (props: IProps) => {
   //   }
   // }, [currentTrack])
 
-
   useEffect(() => {
     if (waveSurfer && currentTrack.isPlaying) {
-      waveSurfer.pause()
+      waveSurfer.pause();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack]);
 
   useEffect(() => {
     if (trackInfo?._id && !currentTrack._id) {
-      setCurrentTrack({ ...trackInfo, isPlaying: false })
+      setCurrentTrack({ ...trackInfo, isPlaying: false });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackInfo])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackInfo]);
 
   return (
     <>
@@ -256,9 +281,10 @@ const WaveTrack = (props: IProps) => {
               <IconButton
                 onClick={() => {
                   onPlayPause();
+                  handleIncreaseView()
                   if (trackInfo && waveSurfer) {
                     // setCurrentTrack({ ...trackInfo, isPlaying: !waveSurfer?.isPlaying() })
-                    setCurrentTrack({ ...currentTrack, isPlaying: false })
+                    setCurrentTrack({ ...currentTrack, isPlaying: false });
                   }
                 }}
                 sx={{
@@ -282,7 +308,9 @@ const WaveTrack = (props: IProps) => {
                   >
                     Related tracks:
                   </Typography>
-                  <Typography variant="body2" sx={{ fontSize: '24px' }}>{trackInfo?.title}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: "24px" }}>
+                    {trackInfo?.title}
+                  </Typography>
                   <LockIcon sx={{ fontSize: 16, color: "grey.500" }} />
                   <Typography variant="caption" color="grey.500">
                     Private
@@ -307,28 +335,43 @@ const WaveTrack = (props: IProps) => {
                 "&:hover .waveHover": { opacity: 1 },
               }}
             >
-              <Box sx={{ ...styleTime, left: 0 }}> {formatTime(currentTime)}</Box>
+              <Box sx={{ ...styleTime, left: 0 }}>
+                {" "}
+                {formatTime(currentTime)}
+              </Box>
               <Box sx={{ ...styleTime, right: 0 }}>{formatTime(duration)}</Box>
-              <Box className="waveHover" ref={waveHoverRef} sx={{ ...styleHover }} />
+              <Box
+                className="waveHover"
+                ref={waveHoverRef}
+                sx={{ ...styleHover }}
+              />
               <Box className="waveOverlay" sx={{ ...styleWaveOverlay }} />
               {/* Comments */}
               <Box sx={{}}>
-                {
-                  comments?.map((comment) => (
-                    <Tooltip key={comment?._id} title={comment.content} placement="top" arrow>
-                      <Box
-                        component={"img"}
-                        src={`/${fetchDefaultImage(comment.user.type)}`}
-                        alt={comment.user.name}
-                        onPointerMove={() => {
-                          const hover = waveHoverRef.current!;
-                          hover.style.width = commentCurrentTime(comment.moment + 3);
-                        }}
-                        sx={{ ...styleImageComment, left: commentCurrentTime(comment.moment) }}
-                      />
-                    </Tooltip>
-                  ))
-                }
+                {comments?.map((comment) => (
+                  <Tooltip
+                    key={comment?._id}
+                    title={comment.content}
+                    placement="top"
+                    arrow
+                  >
+                    <Box
+                      component={"img"}
+                      src={`/${fetchDefaultImage(comment.user.type)}`}
+                      alt={comment.user.name}
+                      onPointerMove={() => {
+                        const hover = waveHoverRef.current!;
+                        hover.style.width = commentCurrentTime(
+                          comment.moment + 3
+                        );
+                      }}
+                      sx={{
+                        ...styleImageComment,
+                        left: commentCurrentTime(comment.moment),
+                      }}
+                    />
+                  </Tooltip>
+                ))}
               </Box>
             </Box>
           </Box>
@@ -356,7 +399,11 @@ const WaveTrack = (props: IProps) => {
         </Paper>
 
         <LikeTrack track={trackInfo} />
-        <TracksComments comments={comments} trackInfo={trackInfo} wavesurfer={waveSurfer} />
+        <TracksComments
+          comments={comments}
+          trackInfo={trackInfo}
+          wavesurfer={waveSurfer}
+        />
       </Container>
     </>
   );
