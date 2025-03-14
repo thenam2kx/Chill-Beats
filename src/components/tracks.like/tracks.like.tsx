@@ -53,6 +53,7 @@ const LikeTrack = (props: IProps) => {
 
   useEffect(() => {
     fetchListLike()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
   return (

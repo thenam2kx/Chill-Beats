@@ -13,6 +13,7 @@ import Link from '@mui/material/Link'
 import NextLink from "next/link";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { convertSlugUrl } from "@/utils/utils";
 
 const sliderStyle: React.CSSProperties = {
   height: 'auto',
@@ -92,7 +93,7 @@ const TracksSlider = (props: IProps) => {
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${item.imgUrl}`}
                     sx={{ width: '100%' }}
                   />
-                  <Link component={NextLink} href={`/track/${item._id}?audio=${item.trackUrl}`} sx={{
+                  <Link component={NextLink} href={`/track/${convertSlugUrl(item.title as string)}-${item._id}.html?audio=${item.trackUrl}`} sx={{
                     fontSize: '16px',
                     fontWeight: 500,
                     mb: '4px',
