@@ -13,12 +13,15 @@ import { getServerSession } from "next-auth"
 
 const ProfilePage = async ({ params }: {params: Promise<{ slug: string }> }) => {
   const { slug } = await params
+  const getId = (slug?.split('.html')[0])?.split('-') ?? []
+  const id = getId[getId.length - 1]
+
   const session = await getServerSession(authOptions)
 
   const result = await fetchAPIs<IBackendRes<IModelPaginate<ITracksTop>>>({
     url: 'http://localhost:8000/api/v1/tracks/users?current=1&pageSize=50&sort=-createdAt',
     method: 'POST',
-    body: { id: slug }
+    body: { id: id }
   })
   console.log('🚀 ~ ProfilePage ~ result:', result)
 

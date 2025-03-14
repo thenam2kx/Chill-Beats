@@ -1,12 +1,9 @@
 import Container from "@mui/material/Container";
 import TracksSlider from "@/components/tracks.slider/tracks.slider";
 import { fetchAPIs } from "@/utils/fetchAPIs";
-// import { getServerSession } from "next-auth/next"
-// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 
 export default async function HomePage() {
-  // const session = await getServerSession(authOptions)
 
   const chills = await fetchAPIs<IBackendRes<ITracksTop[]>>({
     url: 'http://localhost:8000/api/v1/tracks/top',

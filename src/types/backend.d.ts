@@ -13,24 +13,24 @@ declare global {
   }
 
   interface ITracksTop {
-    _id: string
-    title: string
-    description: string
-    category: string
-    imgUrl: string
-    trackUrl: string
-    countLike: number
-    countPlay: number
+    _id: string;
+    title: string;
+    description: string;
+    category: string;
+    imgUrl: string;
+    trackUrl: string;
+    countLike: number;
+    countPlay: number;
     uploader: {
-        _id: string,
-        email: string,
-        name: string
-        role: string
-        type: string
-    }
-    isDeleted: boolean
-    createdAt: string
-    updatedAt: string
+      _id: string;
+      email: string;
+      name: string;
+      role: string;
+      type: string;
+    };
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface IBackendRes<T> {
@@ -57,5 +57,32 @@ declare global {
   interface ITrackContext {
     currentTrack: IShareTrack;
     setCurrentTrack: (v: IShareTrack) => void;
+  }
+
+  interface ITrackComment {
+    _id: string;
+    content: string;
+    createdAt: string;
+    isDeleted: boolean;
+    moment: number;
+    track: string;
+    user: {
+      email: string;
+      name: string;
+      role: string;
+      type: string;
+      _id: string;
+    };
+  }
+
+  interface ITracksLike {
+    _id: string
+    title: string
+    description: string
+    category: string
+    imgUrl: string
+    trackUrl: string
+    countLike: number
+    countPlay: number
   }
 }

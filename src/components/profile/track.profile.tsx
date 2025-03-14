@@ -14,6 +14,7 @@ import { PlayArrow, Pause, Favorite, Share } from "@mui/icons-material"
 import { deepOrange } from "@mui/material/colors"
 import { TrackContext } from "@/app/libs/track.wrapper"
 import Link from "next/link"
+import { convertSlugUrl } from "@/utils/utils"
 
 interface IProps {
   listTracks: ITracksTop[]
@@ -74,7 +75,7 @@ const TrackProfile = (props: IProps) => {
               <Typography
                 variant="h6"
                 component={Link}
-                href={`/track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}
+                href={`/track/${convertSlugUrl(track.title as string)}-${track._id}.html?audio=${track.trackUrl}`}
                 sx={{ cursor: "pointer", color: 'inherit', textDecoration: 'none', fontSize: '1.2rem' }}
               >
                 {track.title}

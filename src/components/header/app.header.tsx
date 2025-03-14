@@ -18,6 +18,7 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { pages } from '@/utils/header.data';
 import { signOut, useSession } from "next-auth/react";
+import { fetchDefaultImage } from '@/utils/utils';
 
 
 
@@ -263,7 +264,7 @@ const AppHeader = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={"https://picsum.photos/200/200"} />
+                <Avatar alt={session?.user.username} src={`/${fetchDefaultImage(session?.user?.type as string)}`} />
               </IconButton>
             </Tooltip>
           </Box>
