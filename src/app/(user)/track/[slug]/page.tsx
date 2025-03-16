@@ -1,6 +1,7 @@
 import WaveTrack from "@/components/wave.track/wave.track";
 import { fetchAPIs } from "@/utils/fetchAPIs";
 import type { Metadata } from "next";
+import { notFound } from 'next/navigation'
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -41,6 +42,10 @@ const DetailTrackPage = async ({ params }: { params: any }) => {
     method: "GET",
     nextOption: { cache: "no-store" },
   });
+
+  if (!trackInfo.data) {
+    return notFound()
+  }
 
   const listComments = await fetchAPIs<
     IBackendRes<IModelPaginate<ITrackComment>>
