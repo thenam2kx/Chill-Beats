@@ -43,7 +43,7 @@ const FileUpload = (props: IProps) => {
 
       try {
         const res = await axios.post(
-          'http://localhost:8000/api/v1/files/upload',
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/files/upload`,
           formData,
           {
             headers: {

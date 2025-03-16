@@ -19,7 +19,7 @@ const ProfilePage = async ({ params }: {params: Promise<{ slug: string }> }) => 
   const session = await getServerSession(authOptions)
 
   const result = await fetchAPIs<IBackendRes<IModelPaginate<ITracksTop>>>({
-    url: 'http://localhost:8000/api/v1/tracks/users?current=1&pageSize=50&sort=-createdAt',
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/users?current=1&pageSize=50&sort=-createdAt`,
     method: 'POST',
     body: { id: id }
   })

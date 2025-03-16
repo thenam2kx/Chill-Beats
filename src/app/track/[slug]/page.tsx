@@ -7,6 +7,17 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+
+export async function generateStaticParams() {
+
+  return [
+    { slug: 'sau-con-mua-67a363c97c0b404349194bc8.html' },
+    { slug: 'truy-lung-bao-vat-67a363c97c0b404349194bc3.html' },
+    { slug: 'mien-man-67a363c97c0b404349194bc2.html' },
+  ]
+
+}
+
 export async function generateMetadata({ params }: Props ): Promise<Metadata> {
   const { slug } = await params;
   const getId = (slug?.split('.html')[0])?.split('-') ?? []
@@ -14,7 +25,7 @@ export async function generateMetadata({ params }: Props ): Promise<Metadata> {
 
   // fetch data
   const trackInfo = await fetchAPIs<IBackendRes<ITracksTop>>({
-    url: `http://localhost:8000/api/v1/tracks/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
   });
 
@@ -34,14 +45,15 @@ export async function generateMetadata({ params }: Props ): Promise<Metadata> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DetailTrackPage = async ({ params }: { params: any }) => {
   await new Promise(resolve => setTimeout(resolve, 3000))
+
   const { slug } = await params;
   const getId = (slug?.split('.html')[0])?.split('-') ?? []
   const id = getId[getId.length - 1]
 
   const trackInfo = await fetchAPIs<IBackendRes<ITracksTop>>({
-    url: `http://localhost:8000/api/v1/tracks/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    nextOption: { cache: "no-store" },
+    // nextOption: { cache: "no-store" },
   });
 
   if (!trackInfo.data) {
@@ -51,7 +63,7 @@ const DetailTrackPage = async ({ params }: { params: any }) => {
   const listComments = await fetchAPIs<
     IBackendRes<IModelPaginate<ITrackComment>>
   >({
-    url: `http://localhost:8000/api/v1/tracks/comments`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comments`,
     method: "POST",
     queryParams: {
       current: 1,
