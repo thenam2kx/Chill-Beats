@@ -1,6 +1,7 @@
 import Container from "@mui/material/Container";
 import TracksSlider from "@/components/tracks.slider/tracks.slider";
 import { fetchAPIs } from "@/utils/fetchAPIs";
+import { notFound } from "next/navigation";
 
 
 export default async function HomePage() {
@@ -23,6 +24,9 @@ export default async function HomePage() {
     body: { category: 'PARTY', limit: 10 }
   })
 
+  if (!chills.data || !workout.data || !party.data) {
+    return notFound()
+  }
 
   return (
     <Container>
