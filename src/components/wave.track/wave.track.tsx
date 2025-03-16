@@ -214,7 +214,7 @@ const WaveTrack = (props: IProps) => {
   const handleIncreaseView = async () => {
     if (firstViewRef.current) {
       await fetchAPIs<IBackendRes<IModelPaginate<ITracksLike>>>({
-        url: `http://localhost:8000/api/v1/tracks/increase-view`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
         method: "POST",
         body: {
           trackId: trackInfo?._id,

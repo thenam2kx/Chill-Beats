@@ -5,7 +5,7 @@ import { JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NO_SECRET!,
+  secret: process.env.NEXTAUTH_SECRET!,
 
   // Configure one or more authentication providers
   providers: [
@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         // Add logic here to look up the user from the credentials supplied
         const res = await fetchAPIs<IBackendRes<JWT>>({
-          url: 'http://localhost:8000/api/v1/auth/login',
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
           method: 'POST',
           body: {
             username: credentials?.username,
@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, trigger }) {
       if (trigger === 'signIn' && account?.provider !== 'credentials') {
         const res = await fetchAPIs<IBackendRes<JWT>>({
-          url: 'http://localhost:8000/api/v1/auth/social-media',
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
           method: 'POST',
           body: { type: account?.provider?.toLocaleUpperCase(), username: user.email }
         })
