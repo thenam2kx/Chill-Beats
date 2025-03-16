@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: Props ): Promise<Metadata> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DetailTrackPage = async ({ params }: { params: any }) => {
+  await new Promise(resolve => setTimeout(resolve, 3000))
   const { slug } = await params;
   const getId = (slug?.split('.html')[0])?.split('-') ?? []
   const id = getId[getId.length - 1]
