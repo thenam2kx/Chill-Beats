@@ -124,6 +124,17 @@ const ProgressUpload = (props: IProps) => {
     if (res.data) {
       setValue(0)
       toast.success('Upload track success')
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await fetchAPIs<IBackendRes<any>>({
+        url: `/api/revalidate`,
+        method: "POST",
+        queryParams: {
+          tag: 'track-by-profile',
+          secret: 'Ov23liwU291AwVKY7Tim'
+        }
+      });
+
     } else {
       toast.error(res.message)
     }

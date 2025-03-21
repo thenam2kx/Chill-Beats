@@ -45,8 +45,20 @@ const LikeTrack = (props: IProps) => {
       },
       headers: { Authorization: `Bearer ${session?.access_token}`},
     });
+
+
     if (res.data) {
       fetchListLike()
+
+      await fetchAPIs<IBackendRes<IModelPaginate<ITracksLike>>>({
+        url: `/api/revalidate`,
+        method: "POST",
+        queryParams: {
+          tag: 'track-by-id',
+          secret: 'Ov23liwU291AwVKY7Tim'
+        }
+      });
+
       router.refresh();
     }
   }

@@ -220,6 +220,16 @@ const WaveTrack = (props: IProps) => {
           trackId: trackInfo?._id,
         }
       });
+
+      await fetchAPIs<IBackendRes<IModelPaginate<ITracksLike>>>({
+        url: `/api/revalidate`,
+        method: "POST",
+        queryParams: {
+          tag: 'track-by-id',
+          secret: 'Ov23liwU291AwVKY7Tim'
+        }
+      });
+
       firstViewRef.current = false
       router.refresh()
     }

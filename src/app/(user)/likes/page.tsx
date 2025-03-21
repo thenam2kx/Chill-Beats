@@ -1,8 +1,9 @@
+import ComingSoonPage from "@/components/coming.soon"
 
 
 const LikesPage = () => {
   return (
-    <div>LikesPage</div>
+    <ComingSoonPage />
   )
 }
 

@@ -44,7 +44,6 @@ export async function generateMetadata({ params }: Props ): Promise<Metadata> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DetailTrackPage = async ({ params }: { params: any }) => {
-  await new Promise(resolve => setTimeout(resolve, 3000))
 
   const { slug } = await params;
   const getId = (slug?.split('.html')[0])?.split('-') ?? []
@@ -53,7 +52,9 @@ const DetailTrackPage = async ({ params }: { params: any }) => {
   const trackInfo = await fetchAPIs<IBackendRes<ITracksTop>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    // nextOption: { cache: "no-store" },
+    nextOption: {
+      next: { tag: ['track-by-id'] }
+    }
   });
 
   if (!trackInfo.data) {
