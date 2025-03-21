@@ -1,10 +1,12 @@
+import ComingSoonPage from "../../../components/coming.soon"
 
 
 const PlaylistPage = async () => {
-  await new Promise(resolve => setTimeout(resolve, 3000))
 
   return (
-    <div>PlaylistPage</div>
+    <div>
+      <ComingSoonPage />
+    </div>
   )
 }
 
